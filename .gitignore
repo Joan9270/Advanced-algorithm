@@ -1,0 +1,48 @@
+class Pair{
+    public int x, y, val;
+    public Pair(int x, int y, int val) {
+        this.x = x;
+        this.y = y;
+        this.val = val;
+    }
+}
+class PairCompare implements Comparator<Pair>{
+    public int compare(Pair a, Pair b)  {
+        return a.val - b.val;
+    }
+}
+
+public class Solution {
+    /**
+     * @param matrix: a matrix of integers
+     * @param k: an integer
+     * @return: the kth smallest number in the matrix
+     */
+    public int kthSmallest(int[][] matrix, int k) {
+        
+        
+        PriorityQueue<Pair> pq = new PriorityQueue<Pair>(k, new PairCompare());
+        int[] dx = new int[]{0, 1};
+        int[] dy = new int[]{1, 0};
+        int m = matrix.length;
+        int n = matrix[0].length;
+        boolean[][] visited = new boolean[m][n];
+        pq.add(new Pair(0, 0, matrix[0][0]));
+    
+        for(int i= 0; i < k-1; i++) {
+            Pair cur = pq.poll();
+            for (int j = 0; j < 2; j++) {
+                int next_x = cur.x + dx[j];
+                int next_y = cur.y + dy[j];
+                Pair next_pair = new Pair(next_x, next_y, 0);
+                if (next_x < m && next_y < n &&!visited[next_x][next_y]) {
+                    visited[next_x][next_y] = true;
+                    next_pair.val = matrix[next_x][next_y];
+                    pq.add(next_pair);
+                }
+            }
+        }
+        return pq.peek().val;
+    }
+    // the next_x <m && next_y < n has to been at beginning if not will out of bound
+}
