@@ -1,0 +1,52 @@
+
+class Pair {
+   public int x = 0, y = 0, sum = 0;
+   public Pair(int x, int y, int sum) {
+    this.x = x;
+    this.y = y;
+    this.sum = sum;
+   }
+}
+class PairComparator implements Comparator<Pair> {
+    public int compare (Pair a, Pair b) {
+        return a.sum - b.sum;
+        
+    }
+}
+public class Solution {
+    /**
+     * @param A an integer arrays sorted in ascending order
+     * @param B an integer arrays sorted in ascending order
+     * @param k an integer
+     * @return an integer
+     */
+     
+      int[] dx = new int[] {0, 1};
+      int[] dy = new int[] {1, 0};
+      
+    public int kthSmallestSum(int[] A, int[] B, int k) {
+        // Write your code here
+        boolean[][] hash = new boolean[A.length][B.length];
+        Pair p = new Pair(0, 0, A[0] + B[0]);
+        Pair nextP = null;
+        PriorityQueue<Pair> pq = new PriorityQueue<Pair>(k, new PairComparator());
+        pq.add(p);
+        for (int i = 0; i<k -1; i++) {
+           p = pq.poll();
+            for (int j = 0; j<2; j++) {
+                int nextX = p.x + dx[j];
+                int nextY = p.y + dy[j];
+                nextP = new Pair(nextX, nextY, 0);
+                if( nextX < A.length && nextY < B.length && !hash[nextX][nextY]) {
+                    nextP.sum = A[nextX] + B[nextY];
+                    pq.add(nextP);
+                    hash[nextX][nextY] = true;
+                }
+            }
+           
+        }
+   return pq.peek().sum;
+    }
+     
+}
+// 初始化的时候不能用nextP = new Pair(nextX, nextY, A[nextX] + B[nextY]), why?
